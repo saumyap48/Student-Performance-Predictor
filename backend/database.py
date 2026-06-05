@@ -15,13 +15,16 @@ if not DATABASE_URL:
 # =========================
 # ENGINE SETUP
 # =========================
+connect_args = {}
+
+# SQLite special case
 if DATABASE_URL.startswith("sqlite"):
-    engine = create_engine(
-        DATABASE_URL, connect_args={"check_same_thread": False}
-    )
-else:
-    # PostgreSQL / production
-    engine = create_engine(DATABASE_URL)
+    connect_args = {"check_same_thread": False}
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args=connect_args
+)
 
 # =========================
 # SESSION
