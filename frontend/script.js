@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://student-performance-predictor-2ktw.onrender.com';
 
 // Helper to get headers with Auth
 const getAuthHeaders = () => {
