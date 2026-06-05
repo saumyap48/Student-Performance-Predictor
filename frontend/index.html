@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Student Performance Predictor</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Redirect to dashboard if already logged in, otherwise to login
+        window.onload = () => {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.location.href = 'login.html';
+            }
+        };
+    </script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card text-center animate">
+            <h1 class="logo mb-4"> StudentAI</h1>
+            <p>Redirecting...</p>
+        </div>
+    </div>
+</body>
+</html>

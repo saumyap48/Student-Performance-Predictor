@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - StudentAI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card auth-card animate">
+            <div class="text-center mb-4">
+                <h1 class="logo">🎓 StudentAI</h1>
+                <p class="text-muted">Welcome back! Please login</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            
+            <div class="text-center mt-4">
+                <p class="text-muted">Don't have an account? <a href="signup.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">Sign Up</a></p>
+            </div>
+            
+            <div id="message" class="text-center mt-4" style="display: none;"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
