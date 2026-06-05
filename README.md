@@ -1,5 +1,8 @@
 # AI-Powered Student Performance Prediction System
 
+🚀 **Live Demo:**  
+👉 https://ai-student-performance-predictor.netlify.app/login.html
+
 A full-stack web application designed for students and educators to predict academic performance using machine learning. This project features a robust FastAPI backend, a secure JWT-based authentication system, and a modern, responsive frontend.
 
 ## 🚀 Features
