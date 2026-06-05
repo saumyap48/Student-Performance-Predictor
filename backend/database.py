@@ -1,16 +1,45 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./student_predictor.db"
+# =========================
+# DATABASE URL (Render / Local)
+# =========================
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+# fallback for local development
+if not DATABASE_URL:
+    DATABASE_URL = "sqlite:///./student_predictor.db"
+
+# =========================
+# ENGINE SETUP
+# =========================
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL, connect_args={"check_same_thread": False}
+    )
+else:
+    # PostgreSQL / production
+    engine = create_engine(DATABASE_URL)
+
+# =========================
+# SESSION
+# =========================
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
 )
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# =========================
+# BASE MODEL
+# =========================
 Base = declarative_base()
 
+# =========================
+# DB DEPENDENCY
+# =========================
 def get_db():
     db = SessionLocal()
     try:
