@@ -23,6 +23,11 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: Optional[str] = None
 
+class UserResponseWithToken(BaseModel):
+    user: User
+    access_token: str
+    token_type: str
+
 class PredictionBase(BaseModel):
     study_hours: float
     attendance: float
@@ -40,3 +45,4 @@ class PredictionHistory(PredictionBase):
 
     class Config:
         from_attributes = True
+
