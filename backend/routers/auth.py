@@ -9,7 +9,7 @@ import crud, schemas, security, database
 
 router = APIRouter(tags=["authentication"])
 
-@router.post("/signup", response_model=schemas.User)
+@router.post("/signup", response_model=schemas.UserResponseWithToken)
 def signup(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
@@ -17,7 +17,20 @@ def signup(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
     db_email = crud.get_user_by_email(db, email=user.email)
     if db_email:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
+    
+    new_user = crud.create_user(db=db, user=user)
+    
+    # Generate token for automatic login
+    access_token_expires = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = security.create_access_token(
+        data={"sub": new_user.username}, expires_delta=access_token_expires
+    )
+    
+    return {
+        "user": new_user,
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
 
 @router.post("/login", response_model=schemas.Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
@@ -33,3 +46,4 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
