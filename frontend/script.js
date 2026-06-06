@@ -87,10 +87,34 @@ if (signupForm) {
             });
 
             if (response.ok) {
+                const data = await response.json();
+                
+                // --- NEW: Robust Auto-Login ---
+                // If backend doesn't return a token (old version/Render), log in manually
+                if (!data.access_token) {
+                    const loginParams = new URLSearchParams();
+                    loginParams.append('username', userData.username);
+                    loginParams.append('password', userData.password);
+
+                    const loginRes = await fetch(`${API_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: loginParams
+                    });
+
+                    if (loginRes.ok) {
+                        const loginData = await loginRes.json();
+                        localStorage.setItem('access_token', loginData.access_token);
+                    }
+                } else {
+                    localStorage.setItem('access_token', data.access_token);
+                }
+                
                 msgDiv.style.display = 'block';
-                msgDiv.innerText = 'Signup successful! Redirecting to login...';
+                msgDiv.innerText = 'Signup successful! Logging you in...';
                 msgDiv.style.color = 'var(--success)';
-                setTimeout(() => window.location.href = 'login.html', 2000);
+                
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
             } else {
                 const error = await response.json();
                 msgDiv.style.display = 'block';
@@ -122,10 +146,25 @@ if (predictionForm) {
     }
 
     fetch(`${API_URL}/profile/`, { headers: getAuthHeaders() })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to fetch profile');
+            return res.json();
+        })
         .then(user => {
-            document.getElementById('userGreeting').innerText = `Hi, ${user.username}`;
+            console.log('Profile Response:', user);
+            if (user && user.username) {
+                document.getElementById('userGreeting').innerText = `Hi, ${user.username}`;
+            } else {
+                console.warn('Username missing in profile response');
+                document.getElementById('userGreeting').innerText = 'Hi!';
+            }
+        })
+        .catch(err => {
+            console.error('Profile fetch error:', err);
+            document.getElementById('userGreeting').innerText = 'Welcome!';
         });
+
+    console.log('Using API_URL:', API_URL);
 
     predictionForm.addEventListener('submit', async (e) => {
         e.preventDefault();
